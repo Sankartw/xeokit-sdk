@@ -1,40 +1,41 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>xeokit Example</title>
-    <link href="css/pageStyle.css" rel="stylesheet"/>
+    <link href="css/pageStyle.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js"></script>
 </head>
+
 <body>
-<input type="checkbox" id="info-button"/>
-<label for="info-button" class="info-button"><i class="far fa-3x fa-question-circle"></i></label>
-<canvas id="myCanvas"></canvas>
-<div class="slideout-sidebar">
-    <img class="info-icon" src="../assets/images/performance_model_icon.png"/>
-    <h1>VBOSceneModel</h1>
-    <h2>Geometry batching benchmark</h2>
-    <p>In this example, we're building a large model using xeokit's VBOSceneModel component and no geometry
-        reuse.</p>
-    <ul>
-        <li>
-            <div id="pleaseWait">Geometry batching benchmark<br>generating 373494 objects, please wait...</div>
-        </li>
-    </ul>
-    <h3>Components Used</h3>
-    <ul>
-        <li>
-            <a href="../docs/class/src/viewer/Viewer.js~Viewer.html"
-               target="_other">Viewer</a>
-        </li>
-        <li>
-            <a href="../docs/class/src/viewer/scene/models/VBOSceneModel/VBOSceneModel.js~VBOSceneModel.html"
-               target="_other">VBOSceneModel</a>
-        </li>
-    </ul>
-</div>
+    <input type="checkbox" id="info-button" />
+    <label for="info-button" class="info-button"><i class="far fa-3x fa-question-circle"></i></label>
+    <canvas id="myCanvas"></canvas>
+    <div class="slideout-sidebar">
+        <img class="info-icon" src="../assets/images/performance_model_icon.png" />
+        <h1>VBOSceneModel</h1>
+        <h2>Geometry batching benchmark</h2>
+        <p>In this example, we're building a large model using xeokit's VBOSceneModel component and no geometry
+            reuse.</p>
+        <ul>
+            <li>
+                <div id="pleaseWait">Geometry batching benchmark<br>generating 373494 objects, please wait...</div>
+            </li>
+        </ul>
+        <h3>Components Used</h3>
+        <ul>
+            <li>
+                <a href="../docs/class/src/viewer/Viewer.js~Viewer.html" target="_other">Viewer</a>
+            </li>
+            <li>
+                <a href="../docs/class/src/viewer/scene/models/VBOSceneModel/VBOSceneModel.js~VBOSceneModel.html"
+                    target="_other">VBOSceneModel</a>
+            </li>
+        </ul>
+    </div>
 </body>
 
 <script type="module">
@@ -43,7 +44,7 @@
     // Import the modules we need for this example
     //------------------------------------------------------------------------------------------------------------------
 
-    import {Viewer, VBOSceneModel, buildBoxGeometry} from "https://cdn.jsdelivr.net/npm/@xeokit/xeokit-sdk/dist/xeokit-sdk.es.min.js";
+    import { Viewer, VBOSceneModel, buildBoxGeometry, Mesh, ReadableGeometry, buildPlaneGeometry, PhongMaterial, Texture } from "https://cdn.jsdelivr.net/npm/@xeokit/xeokit-sdk/dist/xeokit-sdk.es.min.js";
 
     //------------------------------------------------------------------------------------------------------------------
     // Create a Viewer and arrange the camera
@@ -54,10 +55,10 @@
         transparent: true
     });
 
-    viewer.scene.camera.perspective.far = 100000; // 100 km
+    viewer.scene.camera.perspective.far = 5000; // 100 km
 
-    viewer.scene.camera.eye = [450.9527587890625, 1281.239990234375, -3042.414306640625];
-    viewer.scene.camera.look = [-977.5, 17.14933204650879, -397.5];
+    viewer.scene.camera.eye = [150.9527587890625, 441.239990234375, -1042.414306640625];
+    viewer.scene.camera.look = [-977.5, 500.14933204650879, 397.5];
     viewer.scene.camera.up = [-0.17806679010391235, 0.9044896960258484, 0.33330681920051575];
 
     viewer.cameraControl.followPointer = true;
@@ -75,9 +76,25 @@
         position: [0, 0, 0],
         scale: [1, 1, 1],
         rotation: [0, 0, 0],
-        edges: false
+        edges: true
     });
-
+    new Mesh(viewer.scene, {
+        geometry: new ReadableGeometry(viewer.scene, buildPlaneGeometry({
+            xSize: 1200,
+            zSize: 1200
+        })),
+        material: new PhongMaterial(viewer.scene, {
+            diffuse: [1.0, 1.0, 1.0],
+            diffuseMap: new Texture(viewer.scene, {
+                // src: "../assets/textures/metallic/rustedIronMetallicMap.png"
+                src: "../assets/textures/light/Uffizi_Gallery/Uffizi_Gallery_Irradiance_PY.png"
+            }),
+            ambient: [1, 1, 1],
+            shininess: 70,
+            backfaces: true
+        }),
+        position: [0, -2.1, 0]
+    });
     var numObjects = 0;
 
     function makeBuilding(xmin, zmin, xmax, zmax) {
@@ -140,12 +157,13 @@
                 position: [xpos, ypos + ySize, zpos],
                 scale: [(xmaxBox - xminBox) * 0.5, ySize, (zmaxBox - zminBox) * 0.5],
                 rotation: [0, 0, 0],
-                color: [0.3 + Math.random() * 0.5, 0.3 + Math.random() * 0.5, 0.3 + Math.random() * 0.5, 1.0]
+                // color: [0.3 + Math.random() * 0.5, 0.3 + Math.random() * 0.5, 0.3 + Math.random() * 0.5, 1.0]
+                color: [1, 1, 1],
             }));
 
             vboSceneModel.createEntity({
                 meshIds: [meshId],
-                isObject: true // <--- Represents an object, registers Entity by ID on viewer.scene.objects
+                isObject: true, // <--- Represents an object, registers Entity by ID on viewer.scene.objects,
             });
 
             // Decrease current vertical box size
@@ -153,7 +171,7 @@
         }
     }
 
-    var extent = 1500;
+    var extent = 500;
 
     for (var x = -extent; x <= extent; x += 20) {
         for (var z = -extent; z <= extent; z += 20) {
@@ -205,4 +223,5 @@
     window.sceneModel = vboSceneModel;
 
 </script>
+
 </html>

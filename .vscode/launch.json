@@ -1,0 +1,29 @@
+{
+    // 使用 IntelliSense 以得知可用的屬性。
+    // 暫留以檢視現有屬性的描述。
+    // 如需詳細資訊，請瀏覽: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Open sceneRepresentation_VBOSceneModel_batching_benchmark.html",
+            "file": "c:\\Work\\xbim\\xeokit-sdk\\examples\\sceneRepresentation_VBOSceneModel_batching_benchmark.html"
+        },
+        // {
+        //     "type":"node-terminal",
+        //     "request": "launch",
+        //     // "request": "launch-terminal",
+        //     "name": "run rollup",
+        //     "command": "npm run build",
+        // },
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Launch rollup single",
+            "command": "rollup --config -rollup.config.js; rollup --config  rollup.minified.config.js;",
+            // "program": "${workspaceFolder}\\rollup.config.js"
+        }
+
+    ]
+}
